@@ -30,6 +30,7 @@ void setup() {
   Keyboard.begin();             // Initialize USB Keyboard Interface
   
   sunSerial.write(led_cmd, 2);  // Enable Number Lock by Default
+  sunSerial.write(CMD_DISABLE_BELL);      // Power Key to Disable Bell
 }
 
 
@@ -38,25 +39,41 @@ void loop() {
   
   if (c != 0xFFFFFFFF) {
    switch(c) {
-    case 45:  sunSerial.write(CMD_DISABLE_CLICK); break;     // Mute Key to Disable Click Sound
-    case 2:   sunSerial.write(CMD_ENABLE_CLICK); break;      // Decr Vol Key to Enable Click Sound
-    case 4:   sunSerial.write(CMD_ENABLE_BELL); break;       // Incr Vol to Enable Bell
-    case 48:  sunSerial.write(CMD_DISABLE_BELL); break;      // Power Key to Disable Bell 
+//    case 45:  sunSerial.write(CMD_DISABLE_CLICK); break;     // Mute Key to Disable Click Sound
+//    case 2:   sunSerial.write(CMD_ENABLE_CLICK); break;      // Decr Vol Key to Enable Click Sound
+//    case 4:   sunSerial.write(CMD_ENABLE_BELL); break;       // Incr Vol to Enable Bell
+//    case 48:  sunSerial.write(CMD_DISABLE_BELL); break;      // Power Key to Disable Bell 
+    case 45:  key_vol_mute(); break;
+    case  4:  key_vol_incr(); break;
+    case  2:  key_vol_decr(); break;
+    case 48:  key_power(); break;
     case 98:  break;                                         // Ignore NumLock
-    case 119: if (!CAPS_LOCK_ON) {                           // Caps Lock Toggle
+    case  1:  key_stop(); break;
+    case 49:  key_front(); break;
+    case 72:  key_open(); break;
+    case 95:  key_find(); break;
+    case 51:  key_copy(); break;
+    case 73:  key_paste(); break;
+    case 97:  key_cut(); break;
+    case 26:  key_undo(); break;
+    case  3:  key_again(); break;
+    case 22:  key_print_screen(); break;
+//    case 118:  key_help(); break;
+    case 118:  if (!CAPS_LOCK_ON) {                           // Caps Lock Toggle. Cap key = 119, blank key = 15, Help key = 118
                 CAPS_LOCK_ON = true;
                 led_cmd[1] += 8;
                 sunSerial.write(led_cmd, 2);
+                Keyboard.write(KEY_CAPS_LOCK);
               } else {
                 CAPS_LOCK_ON = false;
                 led_cmd[1] -= 8;
                 sunSerial.write(led_cmd, 2);                 
+                Keyboard.write(KEY_CAPS_LOCK);
               }
     default: outputKey(c); break;
    }
   }
 }
-
 
 void outputKey(int key){
 
@@ -73,5 +90,107 @@ void outputKey(int key){
  }
 }
 
+void key_help() {
+  Keyboard.press(KEY_LEFT_ALT);
+  Keyboard.press(KEY_LEFT_ARROW);
+  Keyboard.releaseAll();
+}
 
+void key_stop() {
+  Keyboard.press(KEY_LEFT_ALT);
+  Keyboard.press(KEY_F4);
+  Keyboard.releaseAll();
+}
+
+void key_stop() {
+  Keyboard.press(KEY_LEFT_CTRL);
+  Keyboard.press(KEY_LEFT_ALT);
+  Keyboard.press(KEY_LEFT_DEL);
+}
+
+void key_front() {
+  Keyboard.press(KEY_LEFT_ALT);
+  Keyboard.press(KEY_TAB);
+  Keyboard.releaseAll();
+}
+
+void key_open() {
+  Keyboard.press(KEY_LEFT_CTRL);
+  Keyboard.press(111); // o
+  Keyboard.releaseAll();
+}
+
+void key_find() {
+  Keyboard.press(KEY_LEFT_CTRL);
+  Keyboard.press(102); // f
+  Keyboard.releaseAll();
+}
+
+void key_copy() {
+  Keyboard.press(KEY_LEFT_CTRL);
+  Keyboard.press(99); // c
+  Keyboard.releaseAll();
+}
+
+void key_paste() {
+  Keyboard.press(KEY_LEFT_CTRL);
+  Keyboard.press(118); // v
+  Keyboard.releaseAll();
+}
+
+void key_cut() {
+  Keyboard.press(KEY_LEFT_CTRL);
+  Keyboard.press(120); // x
+  Keyboard.releaseAll();
+}
+
+void key_undo() {
+  Keyboard.press(KEY_LEFT_CTRL);
+  Keyboard.press(122); // z
+  Keyboard.releaseAll();
+}
+
+void key_again() {
+  Keyboard.press(KEY_LEFT_CTRL);
+  Keyboard.press(121); // y
+  Keyboard.releaseAll();
+  Keyboard.press(KEY_LEFT_CTRL);
+  Keyboard.press(KEY_LEFT_SHIFT);
+  Keyboard.press(122); //z
+  Keyboard.releaseAll();
+}
+
+void key_print_screen() {
+  Keyboard.write(44);
+}
+
+void key_vol_decr() {
+  // Browser back button
+  Keyboard.press(KEY_LEFT_ALT);
+  Keyboard.press(KEY_LEFT_ARROW);
+  Keyboard.releaseAll();
+}
+
+void key_vol_incr() {
+  // Browser forward button
+  Keyboard.press(KEY_LEFT_ALT);
+  Keyboard.press(KEY_RIGHT_ARROW);
+  Keyboard.releaseAll();
+}
+
+void key_vol_mute() {
+  // Windows virtual desktop left
+  Keyboard.press(KEY_LEFT_GUI);
+  Keyboard.press(KEY_LEFT_CTRL);
+  Keyboard.press(KEY_LEFT_ARROW);
+  Keyboard.releaseAll();  
+}
+
+void key_power() {
+  // Windows virtual desktop right
+  Keyboard.press(KEY_LEFT_GUI);
+  Keyboard.press(KEY_LEFT_CTRL);
+  Keyboard.press(KEY_RIGHT_ARROW);
+  Keyboard.releaseAll();  
+}
 
