@@ -13,7 +13,7 @@
 
 #include <Keyboard.h>
 #include <SoftwareSerial.h>
-#include "sun_keyboard_map.h"
+#include "keyboardSwitch.h"
 
 //Software serial for Sun KBD
 SoftwareSerial sunSerial(10, 11, true);
